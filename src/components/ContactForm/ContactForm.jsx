@@ -1,35 +1,33 @@
 import { useDispatch, useSelector } from 'react-redux';
-import { addContact } from 'redux/contactsSlice';
-import { getContacts } from 'redux/selectors';
+import { addContact } from 'redux/operations';
+// import { getContacts } from 'redux/selectors';
+import { selectContacts } from 'redux/selectors';
 import { nanoid } from 'nanoid';
 import { toast } from 'react-toastify';
 import * as S from './ContactForm.styled';
 
 export const ContactForm = () => {
   const dispatch = useDispatch();
-  const contacts = useSelector(getContacts);
+  const contacts = useSelector(selectContacts);
 
   const handleSubmit = event => {
     event.preventDefault();
 
-  
     const contact = {
       id: nanoid(),
       name: event.currentTarget.elements.name.value,
       number: event.currentTarget.elements.number.value,
     };
 
-   
     const isExist = contacts.find(
       ({ name }) => name.toLowerCase() === contact.name.toLowerCase()
     );
 
-    
     if (isExist) {
       return toast.warn(`${contact.name} is already in contacts.`);
     }
 
-    dispatch(addContact(contact));
+    dispatch(addContact({ name: contact.name, phone: contact.number }));
     event.currentTarget.reset();
   };
 
